@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Focus On",
+  "version": "1.0",
+  "description": "YouTube distraction blocker",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": ["*://*.youtube.com/*"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [{
+    "matches": ["*://*.youtube.com/*"],
+    "js": ["content.js"],
+    "css": ["styles.css"],
+    "run_at": "document_end"
+  }]
+}

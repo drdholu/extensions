@@ -1,0 +1,68 @@
+/* Hide homepage elements only */
+ytd-rich-grid-renderer,
+ytd-banner-promo-renderer,
+ytd-reel-shelf-renderer {
+  display: none !important;
+}
+
+/* Hide persistent distractions */
+#secondary,
+ytd-watch-next-secondary-results-renderer,
+ytd-comments {
+  display: none !important;
+}
+
+/* Keep search results intact */
+ytd-search {
+  display: block !important;
+}
+
+/* Adjust main content width */
+#primary.ytd-watch-flexy {
+  max-width: 100% !important;
+}
+
+#yt-focus-container {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  background: #000;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.error-message {
+  color: #dc2626 !important;
+  font-size: 12px !important;
+  margin-top: 8px !important;
+  padding: 4px 8px !important;
+  background: #fee2e2 !important;
+  border-radius: 4px !important;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(-5px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.video-link {
+  color: #1a73e8 !important;
+  text-decoration: none !important;
+  flex-grow: 1;
+  margin-right: 12px;
+  font-size: 14px !important;
+  transition: color 0.2s ease;
+  cursor: pointer !important;
+}
+
+.video-link:hover {
+  color: #1557b0 !important;
+  text-decoration: underline !important;
+}
+
+.remove-btn {
+  /* Ensure remove button stays visible */
+  position: relative;
+  z-index: 1;
+}
