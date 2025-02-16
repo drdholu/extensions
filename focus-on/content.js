@@ -47,18 +47,18 @@ observer.observe(document.body, {
 });
 
 function createFocusList(videos) {
-    const container = document.createElement('div');
-    container.id = "yt-focus-container";
-    container.innerHTML = `
-        <h2 style="color: #fff; margin: 20px; font-size: 16px;">Your Focus List</h2>
-        ${videos.map(video => `
-            <div style="margin: 10px; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                <a href="/watch?v=${video.id}" 
-                   style="color: #fff; text-decoration: none; font-size: 14px; display: block;">
-                    ${video.title}
-                </a>
-            </div>
-        `).join('')}
-    `;
-    document.body.prepend(container);
+    // const container = document.createElement('div');
+    // container.id = "yt-focus-container";
+    // container.innerHTML = `
+    //     <h2 style="color: #fff; margin: 20px; font-size: 16px;">Your Focus List</h2>
+    //     ${videos.map(video => `
+    //         <div style="margin: 10px; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+    //             <a href="/watch?v=${video.id}" 
+    //                style="color: #fff; text-decoration: none; font-size: 14px; display: block;">
+    //                 ${video.title}
+    //             </a>
+    //         </div>
+    //     `).join('')}
+    // `;
+    // document.body.prepend(container);
 }
