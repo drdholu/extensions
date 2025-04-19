@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Volume Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            width: 280px;
+            padding: 16px;
+            background-color: #fafafa;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            justify-content: space-between;
+        }
+
+        .title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        #volumeValue {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6b7280;
+            background: #f3f4f6;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+
+        .slider-container {
+            position: relative;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .slider-track {
+            position: absolute;
+            height: 6px;
+            background: #3b82f6;
+            border-radius: 3px;
+            pointer-events: none;
+        }
+
+        .slider-marker {
+            position: absolute;
+            height: 12px;
+            width: 2px;
+            background: #9ca3af;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border: 2px solid #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .volume-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f3f4f6;
+            color: #4b5563;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .volume-button:hover {
+            background: #e5e7eb;
+            color: #1f2937;
+        }
+
+        .volume-button:active {
+            transform: scale(0.95);
+        }
+
+        .icons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+        }
+
+        .icon {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        .status-message {
+            margin-top: 16px;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .error {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .boost-label {
+            position: absolute;
+            font-size: 10px;
+            color: #ef4444;
+            font-weight: 600;
+            top: -16px;
+            right: 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="title">Volume Control</span>
+            <span id="volumeValue">100%</span>
+        </div>
+        <div class="slider-container">
+            <div class="boost-label" id="boostLabel">BOOST</div>
+            <div class="slider-track"></div>
+            <div class="slider-marker" id="normalVolumeMarker"></div>
+            <input type="range" id="volumeSlider" min="0" max="200" value="100">
+        </div>
+        <div class="icons">
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                </svg>
+            </div>
+            <div class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="button-container">
+            <button id="decreaseVolume" class="volume-button">-</button>
+            <button id="resetVolume" class="volume-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                    <path d="M3 3v5h5"></path>
+                </svg>
+            </button>
+            <button id="increaseVolume" class="volume-button">+</button>
+        </div>
+        <div id="statusMessage" class="status-message" style="display: none;"></div>
+    </div>
+
+    <script src="popup.js"></script>
+    <script>
+        // Add the track fill effect
+        const slider = document.getElementById('volumeSlider');
+        const track = document.querySelector('.slider-track');
+        const value = document.getElementById('volumeValue');
+        const marker = document.getElementById('normalVolumeMarker');
+        const boostLabel = document.getElementById('boostLabel');
+
+        function updateSlider() {
+            const percent = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            track.style.width = percent + '%';
+            value.textContent = slider.value + '%';
+
+            // Change color when boosting volume (>100%)
+            if (parseInt(slider.value) > 100) {
+                value.style.color = '#ef4444';
+                value.style.fontWeight = '600';
+                boostLabel.style.display = 'block';
+            } else {
+                value.style.color = '#6b7280';
+                value.style.fontWeight = '500';
+                boostLabel.style.display = 'none';
+            }
+        }
+
+        // Position the 100% marker
+        function positionMarker() {
+            const sliderWidth = slider.offsetWidth;
+            const normalPosition = ((100 - slider.min) / (slider.max - slider.min)) * sliderWidth;
+            marker.style.left = normalPosition + 'px';
+        }
+
+        slider.addEventListener('input', updateSlider);
+        window.addEventListener('load', positionMarker);
+        window.addEventListener('resize', positionMarker);
+
+        // Initial calls
+        updateSlider();
+        setTimeout(positionMarker, 50); // Small delay to ensure DOM is ready
+    </script>
+</body>
+</html>

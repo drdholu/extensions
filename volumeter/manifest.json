@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "Volumeter",
+    "version": "1.0",
+    "description": "Control the volume of specific browser tabs",
+    "permissions": [
+        "storage",
+        "tabs",
+        "activeTab",
+        "scripting"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
