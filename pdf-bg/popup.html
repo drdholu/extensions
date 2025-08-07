@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lights Out</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: "Segoe UI", Roboto, sans-serif; }
+    body { width: 320px; background: #f5f5f5; padding: 16px; }
+    .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    h1 { font-size: 18px; font-weight: 600; text-align: center; color: #1a73e8; margin-bottom: 16px; }
+    label { display: block; font-size: 14px; margin-top: 12px; margin-bottom: 6px; color: #202124; }
+    select { width: 100%; padding: 10px; border: 2px solid #e8eaed; border-radius: 8px; font-size: 14px; }
+    select:focus { outline:none; border-color:#1a73e8; box-shadow:0 0 0 3px rgba(26,115,232,0.2); }
+    .btn { width: 100%; padding: 10px; margin-top: 16px; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .btn-primary { background: #1a73e8; color: #fff; }
+    .btn-secondary { background: #e8eaed; color: #202124; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Lights Out</h1>
+
+    <button id="toggleBtn" class="btn btn-primary">Disable Extension</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
