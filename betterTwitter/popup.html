@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>betterX</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>betterX</h1>
+            <p>Customize your X.com experience</p>
+        </header>
+
+        <main class="main">
+            <section class="preview-section">
+                <h3>Preview</h3>
+                <div class="preview-text" id="previewText">
+                    The quick brown fox jumps over the lazy dog. 
+                    This is how X will look!
+                </div>
+            </section>
+
+            <section class="font-section">
+                <h3>Choose Font</h3>
+                
+                <div class="font-group">
+                    <h4>Built-in Fonts</h4>
+                    <label for="builtinFontSelect" class="sr-only">Choose a built-in font</label>
+                    <select id="builtinFontSelect" class="builtin-font-select">
+                        <option value="default">X Default</option>
+                        <option value="Arial" style="font-family: Arial, sans-serif;">Arial</option>
+                        <option value="Georgia" style="font-family: Georgia, serif;">Georgia</option>
+                        <option value="Times New Roman" style="font-family: 'Times New Roman', serif;">Times New Roman</option>
+                        <option value="Courier New" style="font-family: 'Courier New', monospace;">Courier New</option>
+                        <option value="Verdana" style="font-family: Verdana, sans-serif;">Verdana</option>
+                    </select>
+                </div>
+
+                <div class="font-group">
+                    <h4>Your Custom Fonts</h4>
+                    <div class="custom-fonts" id="customFonts">
+                        <div class="no-custom-fonts" id="noCustomFonts">
+                            No custom fonts uploaded yet
+                        </div>
+                    </div>
+                </div>
+
+                <div class="upload-section">
+                    <h4>Upload New Font</h4>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fontUpload" accept=".ttf,.otf,.woff,.woff2" multiple hidden>
+                        <div class="upload-content">
+                            <div class="upload-icon">📎</div>
+                            <p>Click to upload or drag & drop</p>
+                            <span class="upload-hint">Supports TTF, OTF, WOFF, WOFF2</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Font Size Control -->
+            
+
+            <!-- Actions -->
+            <section class="actions">
+                <button class="btn btn-primary" id="applyFont">Apply Font</button>
+                <button class="btn btn-secondary" id="resetFont">Reset to Default</button>
+            </section>
+        </main>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

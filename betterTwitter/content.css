@@ -1,0 +1,44 @@
+/* betterX - Content Styles */
+
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+@font-display swap;
+
+.better-twitter-fonts-applied {
+    font-feature-settings: "kern" 1, "liga" 1;
+    text-rendering: optimizeLegibility;
+}
+
+.better-twitter-fonts-loading {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+/* Ensure consistent line height for posts */
+[data-testid="tweetText"] {
+    line-height: 1.4 !important;
+}
+
+.better-twitter-fonts-small {
+    font-size: 13px;
+    line-height: 1.3;
+}
+
+.better-twitter-fonts-medium {
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.better-twitter-fonts-large {
+    font-size: 17px;
+    line-height: 1.5;
+}
+
+.better-twitter-fonts-custom {
+    letter-spacing: 0.01em;
+    word-spacing: 0.02em;
+}

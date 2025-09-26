@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "betterX",
+  "version": "1.0.0",
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "alarms"
+  ],
+  
+  "host_permissions": [
+    "*://x.com/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "betterX"
+  },
+  
+  "content_scripts": [
+    {
+      "matches": ["*://x.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_start"
+    }
+  ],
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/*"],
+      "matches": ["*://x.com/*"]
+    }
+  ]
+}
