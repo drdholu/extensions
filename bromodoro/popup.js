@@ -11,12 +11,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   const focusTabInfo = document.getElementById('focusTabInfo');
   const focusTabTitle = document.getElementById('focusTabTitle');
   const planSummary = document.getElementById('planSummary');
+  const customModeRadio = document.getElementById('customMode');
+  const totalModeRadio = document.getElementById('totalMode');
+  const customSection = document.getElementById('customSection');
+  const totalSection = document.getElementById('totalSection');
 
   // Load saved data
   await loadData();
   await updateTimerDisplay();
   await updateSessionCount();
-  renderPlanSummary();
+  setupModeHandlers();
+  updateModeDisplay();
 
   // Preset button handlers
   presetBtns.forEach(btn => {
@@ -29,8 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       presetBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
-      renderPlanSummary();
     });
   });
 
@@ -53,9 +56,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    // Calculate optimal plan if total session is provided
-    const totalMinutes = totalMinutesInput.value ? parseInt(totalMinutesInput.value) : null;
-    const plan = totalMinutes ? calculateOptimalPlan(totalMinutes) : null;
+    // Determine which mode is active
+    const isCustomMode = customModeRadio.checked;
+    let totalMinutes = null;
+    let plan = null;
+
+    if (!isCustomMode && totalModeRadio.checked) {
+      // Total session mode
+      totalMinutes = totalMinutesInput.value ? parseInt(totalMinutesInput.value) : null;
+      if (!totalMinutes || totalMinutes < 5) {
+        alert('Please set a valid total session time (at least 5 minutes)!');
+        return;
+      }
+      plan = calculateOptimalPlan(totalMinutes);
+    }
 
     // Start the timer
     chrome.runtime.sendMessage({
@@ -98,11 +112,65 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   async function loadData() {
-    const result = await chrome.storage.sync.get(['focusTime', 'breakTime', 'sessionsCompleted', 'totalMinutes']);
+    const result = await chrome.storage.sync.get(['focusTime', 'breakTime', 'sessionsCompleted', 'totalMinutes', 'timerMode']);
     
     if (result.focusTime) focusTimeInput.value = result.focusTime;
     if (result.breakTime) breakTimeInput.value = result.breakTime;
     if (result.totalMinutes) totalMinutesInput.value = result.totalMinutes;
+    
+    // Load saved mode
+    if (result.timerMode === 'total') {
+      totalModeRadio.checked = true;
+      customModeRadio.checked = false;
+    } else {
+      customModeRadio.checked = true;
+      totalModeRadio.checked = false;
+    }
+  }
+
+  function setupModeHandlers() {
+    // Make entire mode option clickable
+    const customModeOption = customModeRadio.closest('.mode-option');
+    const totalModeOption = totalModeRadio.closest('.mode-option');
+
+    customModeOption.addEventListener('click', () => {
+      customModeRadio.checked = true;
+      chrome.storage.sync.set({ timerMode: 'custom' });
+      updateModeDisplay();
+    });
+
+    totalModeOption.addEventListener('click', () => {
+      totalModeRadio.checked = true;
+      chrome.storage.sync.set({ timerMode: 'total' });
+      updateModeDisplay();
+    });
+
+    // Also handle radio button changes directly
+    customModeRadio.addEventListener('change', () => {
+      if (customModeRadio.checked) {
+        chrome.storage.sync.set({ timerMode: 'custom' });
+        updateModeDisplay();
+      }
+    });
+
+    totalModeRadio.addEventListener('change', () => {
+      if (totalModeRadio.checked) {
+        chrome.storage.sync.set({ timerMode: 'total' });
+        updateModeDisplay();
+      }
+    });
+  }
+
+  function updateModeDisplay() {
+    if (customModeRadio.checked) {
+      customSection.style.display = 'block';
+      totalSection.style.display = 'none';
+      planSummary.style.display = 'none';
+    } else {
+      customSection.style.display = 'none';
+      totalSection.style.display = 'block';
+      renderPlanSummary();
+    }
   }
 
   async function updateTimerDisplay() {
@@ -169,13 +237,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     chrome.storage.sync.set({ focusTime: parseInt(focusTimeInput.value) });
   });
 
-  focusTimeInput.addEventListener('input', renderPlanSummary);
-
   breakTimeInput.addEventListener('change', () => {
     chrome.storage.sync.set({ breakTime: parseInt(breakTimeInput.value) });
   });
-
-  breakTimeInput.addEventListener('input', renderPlanSummary);
 
   totalMinutesInput.addEventListener('change', () => {
     const v = parseInt(totalMinutesInput.value);
@@ -185,6 +249,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   totalMinutesInput.addEventListener('input', renderPlanSummary);
 
   function renderPlanSummary() {
+    // Only show plan summary in total mode
+    if (!totalModeRadio.checked) {
+      planSummary.style.display = 'none';
+      return;
+    }
+
     const total = parseInt(totalMinutesInput.value) || 0;
     if (!total || total <= 0) {
       planSummary.style.display = 'none';

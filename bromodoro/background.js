@@ -399,46 +399,49 @@ async function handleFocusLost() {
   // Stop the timer first
   stopTimer();
 
-  // Remove notifications path; use content alert + popup window instead
-
-  // Try to show overlay on current tab as secondary method
+  // Try to show in-page overlay first (preferred method)
+  let contentAlertShown = false;
   try {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tabs[0]) {
+    if (tabs[0] && tabs[0].url && /^(https?:|file:)/.test(tabs[0].url)) {
       await chrome.tabs.sendMessage(tabs[0].id, {
         action: 'showFocusLostAlert'
       });
+      contentAlertShown = true;
+      console.log('Content alert shown successfully');
     }
   } catch (error) {
     console.log('Could not send message to content script:', error);
-    // This is expected if the tab doesn't have the content script loaded
   }
 
-  // Open a small popup window as guaranteed alert fallback
-  try {
-    if (focusAlertWindowId) {
-      chrome.windows.update(focusAlertWindowId, { focused: true });
-    } else {
-      chrome.windows.create({
-        url: chrome.runtime.getURL(`focus_lost.html?tabId=${encodeURIComponent(String(timerState.focusTabId || ''))}&winId=${encodeURIComponent(String(timerState.focusWindowId || ''))}`),
-        type: 'popup',
-        width: 360,
-        height: 180
-      }, (w) => {
-        if (w && w.id) {
-          focusAlertWindowId = w.id;
-          const onRemoved = (id) => {
-            if (id === focusAlertWindowId) {
-              focusAlertWindowId = null;
-              chrome.windows.onRemoved.removeListener(onRemoved);
-            }
-          };
-          chrome.windows.onRemoved.addListener(onRemoved);
-        }
-      });
+  // Only show popup window if content alert failed
+  if (!contentAlertShown) {
+    console.log('Showing popup window fallback');
+    try {
+      if (focusAlertWindowId) {
+        chrome.windows.update(focusAlertWindowId, { focused: true });
+      } else {
+        chrome.windows.create({
+          url: chrome.runtime.getURL(`focus_lost.html?tabId=${encodeURIComponent(String(timerState.focusTabId || ''))}&winId=${encodeURIComponent(String(timerState.focusWindowId || ''))}`),
+          type: 'popup',
+          width: 360,
+          height: 180
+        }, (w) => {
+          if (w && w.id) {
+            focusAlertWindowId = w.id;
+            const onRemoved = (id) => {
+              if (id === focusAlertWindowId) {
+                focusAlertWindowId = null;
+                chrome.windows.onRemoved.removeListener(onRemoved);
+              }
+            };
+            chrome.windows.onRemoved.addListener(onRemoved);
+          }
+        });
+      }
+    } catch (e) {
+      console.log('Popup alert fallback failed:', e);
     }
-  } catch (e) {
-    console.log('Popup alert fallback failed:', e);
   }
 
   // Notify popup

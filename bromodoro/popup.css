@@ -53,6 +53,73 @@ header h1 {
   font-weight: 500;
 }
 
+.mode-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  justify-content: center;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.mode-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.mode-option:hover {
+  background: #e2e8f0;
+}
+
+.mode-option input[type="radio"] {
+  margin: 2px 0 0 0;
+  accent-color: #2563eb;
+  flex-shrink: 0;
+}
+
+.mode-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.mode-option label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.mode-description {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.mode-option input[type="radio"]:checked + .mode-content label {
+  color: #2563eb;
+}
+
+.mode-option input[type="radio"]:checked + .mode-content .mode-description {
+  color: #3b82f6;
+}
+
+.timer-section {
+  margin-bottom: 20px;
+}
+
 .preset-buttons {
   display: flex;
   gap: 6px;

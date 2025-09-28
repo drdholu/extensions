@@ -17,12 +17,18 @@
     restartBtn.addEventListener('click', () => {
       const { tabId, windowId } = getParams();
       chrome.runtime.sendMessage({ action: 'focusRestart', tabId, windowId }, () => {
+        if (chrome.runtime.lastError) {
+          console.log('Unchecked lastError:', chrome.runtime.lastError.message);
+        }
         window.close();
       });
     });
 
     dontCareBtn.addEventListener('click', () => {
       chrome.runtime.sendMessage({ action: 'focusDismiss' }, () => {
+        if (chrome.runtime.lastError) {
+          console.log('Unchecked lastError:', chrome.runtime.lastError.message);
+        }
         window.close();
       });
     });

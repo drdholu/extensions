@@ -20,28 +20,49 @@
     </div>
 
     <div class="controls">
-      <div class="preset-buttons">
-        <button class="preset-btn" data-focus="25" data-break="5">Classic (25/5)</button>
-        <button class="preset-btn" data-focus="45" data-break="15">Extended (45/15)</button>
-        <button class="preset-btn" data-focus="15" data-break="3">Quick (15/3)</button>
-      </div>
-
-      <div class="custom-timers">
-        <div class="timer-input">
-          <label>Focus (min):</label>
-          <input type="number" id="focusTime" min="1" max="120" value="25">
+      <div class="mode-selector">
+        <div class="mode-option">
+          <input type="radio" id="customMode" name="timerMode" value="custom" checked>
+          <div class="mode-content">
+            <label for="customMode">Custom Timer</label>
+            <div class="mode-description">Set your own focus & break times</div>
+          </div>
         </div>
-        <div class="timer-input">
-          <label>Break (min):</label>
-          <input type="number" id="breakTime" min="1" max="60" value="5">
-        </div>
-        <div class="timer-input">
-          <label>Total session (min, optional):</label>
-          <input type="number" id="totalMinutes" min="0" max="600" placeholder="e.g. 60">
+        <div class="mode-option">
+          <input type="radio" id="totalMode" name="timerMode" value="total">
+          <div class="mode-content">
+            <label for="totalMode">Total Session</label>
+            <div class="mode-description">Enter total time, get optimized plan</div>
+          </div>
         </div>
       </div>
 
-      <div id="planSummary" class="plan-summary" style="display:none;"></div>
+      <div id="customSection" class="timer-section">
+        <div class="preset-buttons">
+          <button class="preset-btn" data-focus="25" data-break="5">Classic (25/5)</button>
+          <button class="preset-btn" data-focus="45" data-break="15">Extended (45/15)</button>
+          <button class="preset-btn" data-focus="15" data-break="3">Quick (15/3)</button>
+        </div>
+
+        <div class="custom-timers">
+          <div class="timer-input">
+            <label>Focus (min):</label>
+            <input type="number" id="focusTime" min="1" max="120" value="25">
+          </div>
+          <div class="timer-input">
+            <label>Break (min):</label>
+            <input type="number" id="breakTime" min="1" max="60" value="5">
+          </div>
+        </div>
+      </div>
+
+      <div id="totalSection" class="timer-section" style="display:none;">
+        <div class="timer-input">
+          <label>Total session (min):</label>
+          <input type="number" id="totalMinutes" min="5" max="600" placeholder="e.g. 60">
+        </div>
+        <div id="planSummary" class="plan-summary" style="display:none;"></div>
+      </div>
 
       <div class="main-actions">
         <button id="startBtn" class="primary-btn">Start Focus Session</button>
