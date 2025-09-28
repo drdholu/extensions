@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bromodoro - Focus Lost</title>
+  <style>
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif; 
+      background: #ffffff;
+    }
+    .wrap { 
+      height: 100%; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .card { 
+      text-align: center; 
+      padding: 24px 28px; 
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      border: 1px solid #fecaca;
+      max-width: 320px;
+      width: 100%;
+    }
+    h1 { 
+      margin: 0 0 8px 0; 
+      font-size: 20px; 
+      font-weight: 700;
+      color: #dc2626;
+    }
+    p { 
+      margin: 0 0 18px 0; 
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .button-row { 
+      display: flex; 
+      gap: 8px; 
+      justify-content: center; 
+    }
+    .btn { 
+      background: #f1f5f9; 
+      border: 1px solid #e2e8f0; 
+      color: #475569; 
+      padding: 10px 16px; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-size: 13px; 
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .btn.primary { 
+      background: #2563eb; 
+      color: white; 
+      border-color: #2563eb;
+    }
+    .btn:hover { 
+      transform: translateY(-1px);
+    }
+    .btn.primary:hover {
+      background: #1d4ed8;
+    }
+    .btn:not(.primary):hover {
+      background: #e2e8f0;
+    }
+    .emoji { 
+      font-size: 32px; 
+      margin-bottom: 12px; 
+      display: block; 
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <span class="emoji">😔</span>
+      <h1>You've lost focus</h1>
+      <p>The timer stopped because you left your focus tab.</p>
+      <div class="button-row">
+        <button class="btn primary" id="restartBtn">Restart</button>
+        <button class="btn" id="dontCareBtn">Don't care</button>
+      </div>
+    </div>
+  </div>
+  <script src="focus_lost.js"></script>
+</body>
+</html>
+
+

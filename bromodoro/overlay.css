@@ -1,0 +1,227 @@
+/* Bromodoro Break Overlay */
+#bromodoro-break-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.bromodoro-overlay-content {
+  background: #ffffff;
+  padding: 48px;
+  border-radius: 24px;
+  text-align: center;
+  color: #1e293b;
+  max-width: 480px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e2e8f0;
+  animation: slideUp 0.4s ease-out;
+}
+
+.bromodoro-emoji {
+  font-size: 48px;
+  margin-bottom: 16px;
+  animation: bounce 1s ease-in-out infinite alternate;
+  display: block;
+}
+
+.bromodoro-overlay-content h2 {
+  margin: 0 0 16px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.bromodoro-message {
+  font-size: 16px;
+  margin-bottom: 32px;
+  color: #64748b;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.bromodoro-timer {
+  background: #f8fafc;
+  padding: 24px;
+  border-radius: 16px;
+  margin-bottom: 32px;
+  border: 1px solid #e2e8f0;
+}
+
+.bromodoro-countdown {
+  font-size: 52px;
+  font-weight: 200;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 8px;
+  color: #2563eb;
+}
+
+.bromodoro-timer-label {
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.bromodoro-break-tips {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.bromodoro-tip {
+  background: #ecfdf5;
+  padding: 10px 16px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #065f46;
+  border: 1px solid #d1fae5;
+  transition: all 0.2s;
+}
+
+.bromodoro-tip:hover {
+  background: #d1fae5;
+  transform: translateY(-1px);
+}
+
+/* Focus Lost Alert */
+#bromodoro-focus-lost-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(12px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.bromodoro-alert-content {
+  background: #ffffff;
+  padding: 32px;
+  border-radius: 20px;
+  text-align: center;
+  color: #1e293b;
+  max-width: 400px;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.15);
+  border: 1px solid #fecaca;
+  animation: slideUp 0.4s ease-out;
+}
+
+.bromodoro-alert-content h2 {
+  margin: 0 0 12px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.bromodoro-alert-content p {
+  font-size: 15px;
+  margin-bottom: 24px;
+  color: #64748b;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.bromodoro-alert-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bromodoro-alert-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.bromodoro-alert-btn.primary {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+}
+
+.bromodoro-alert-btn.secondary {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.bromodoro-alert-btn:hover {
+  transform: translateY(-1px);
+}
+
+.bromodoro-alert-btn.primary:hover {
+  background: #1d4ed8;
+}
+
+.bromodoro-alert-btn.secondary:hover {
+  background: #e2e8f0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-10px); }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .bromodoro-overlay-content {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+  
+  .bromodoro-emoji {
+    font-size: 48px;
+  }
+  
+  .bromodoro-overlay-content h2 {
+    font-size: 24px;
+  }
+  
+  .bromodoro-countdown {
+    font-size: 36px;
+  }
+  
+  .bromodoro-break-tips {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
