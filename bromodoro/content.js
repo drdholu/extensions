@@ -1,7 +1,13 @@
-// Content script for Bromodoro overlay and alerts
+// Bromodoro content script
 
 let breakOverlay = null;
 let breakTimer = null;
+
+const OVERLAY_ID = 'bromodoro-break-overlay';
+const ALERT_ID   = 'bromodoro-focus-lost-alert';
+
+const qs = (sel, root = document) => root.querySelector(sel);
+const removeEl = (el) => el && el.remove();
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -21,12 +27,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function showBreakOverlay(breakMinutes) {
-  // Remove any existing overlay
   hideOverlay();
 
-  // Create overlay container
   breakOverlay = document.createElement('div');
-  breakOverlay.id = 'bromodoro-break-overlay';
+  breakOverlay.id = OVERLAY_ID;
   breakOverlay.innerHTML = `
     <div class="bromodoro-overlay-content">
       <div class="bromodoro-emoji">🎉</div>
@@ -59,17 +63,17 @@ function showBreakOverlay(breakMinutes) {
 }
 
 function startBreakCountdown(totalSeconds) {
-  let timeRemaining = totalSeconds;
-  const countdownElement = breakOverlay.querySelector('.bromodoro-countdown');
+  let remain = totalSeconds;
+  const countdownEl = qs('.bromodoro-countdown', breakOverlay);
 
   breakTimer = setInterval(() => {
-    timeRemaining--;
-    
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    remain--;
 
-    if (timeRemaining <= 0) {
+    const m = Math.floor(remain / 60);
+    const s = remain % 60;
+    countdownEl.textContent = `${m}:${s.toString().padStart(2, '0')}`;
+
+    if (remain <= 0) {
       clearInterval(breakTimer);
       hideOverlay();
     }
@@ -77,11 +81,8 @@ function startBreakCountdown(totalSeconds) {
 }
 
 function hideOverlay() {
-  if (breakOverlay) {
-    breakOverlay.remove();
-    breakOverlay = null;
-  }
-  
+  removeEl(breakOverlay);
+  breakOverlay = null;
   if (breakTimer) {
     clearInterval(breakTimer);
     breakTimer = null;
@@ -89,17 +90,10 @@ function hideOverlay() {
 }
 
 function showFocusLostAlert() {
-  console.log('Showing focus lost alert on page:', window.location.href);
-  
-  // Remove any existing focus lost alerts
-  const existingAlert = document.getElementById('bromodoro-focus-lost-alert');
-  if (existingAlert) {
-    existingAlert.remove();
-  }
+  removeEl(document.getElementById(ALERT_ID)); // ensure single alert
 
-  // Create alert overlay
   const alertOverlay = document.createElement('div');
-  alertOverlay.id = 'bromodoro-focus-lost-alert';
+  alertOverlay.id = ALERT_ID;
   alertOverlay.innerHTML = `
     <div class="bromodoro-alert-content">
       <div class="bromodoro-emoji">😔</div>
@@ -131,10 +125,5 @@ function showFocusLostAlert() {
   console.log('Focus lost alert added to page');
 
   // Auto-remove after 8 seconds (increased time)
-  setTimeout(() => {
-    if (alertOverlay.parentElement) {
-      alertOverlay.remove();
-      console.log('Focus lost alert auto-removed');
-    }
-  }, 8000);
+  setTimeout(() => removeEl(alertOverlay), 8000);
 }

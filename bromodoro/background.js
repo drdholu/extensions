@@ -12,9 +12,34 @@ let timerState = {
   planIndex: 0
 };
 
-// Track a popup alert window to avoid duplicates
+// Popup alert window IDs
 let focusAlertWindowId = null;
 let breakWindowId = null;
+
+// Utility helpers
+// Save timer state
+function saveTimerState() {
+  chrome.storage.local.set({ timerState });
+}
+
+// Clear timer state
+function clearTimerState() {
+  chrome.storage.local.remove('timerState');
+}
+
+// Close break window if open
+function closeBreakWindow() {
+  if (!breakWindowId) return;
+  try {
+    chrome.windows.remove(breakWindowId);
+  } catch (_) {}
+  breakWindowId = null;
+}
+
+// Best-effort broadcast
+function broadcastMessage(message) {
+  chrome.runtime.sendMessage(message).catch(() => {});
+}
 
 // Initialize extension
 chrome.runtime.onInstalled.addListener(() => {
@@ -180,7 +205,7 @@ function startTimer({ focusMinutes, breakMinutes, focusTabId, focusTabTitle, foc
   };
 
   // Save timer state
-  chrome.storage.local.set({ timerState });
+  saveTimerState();
 
   // Start the countdown
   startCountdown();
@@ -202,7 +227,7 @@ function stopTimer() {
   timerState.intervalId = null;
 
   // Clear stored timer state
-  chrome.storage.local.remove('timerState');
+  clearTimerState();
 
   // Notify popup and content script
   broadcastMessage({ action: 'timerStopped' });
@@ -215,8 +240,8 @@ function startCountdown() {
       timerState.totalRemainingSeconds = Math.max(0, timerState.totalRemainingSeconds - 1);
     }
 
-    // Update stored state
-    chrome.storage.local.set({ timerState });
+    // Persist updated state
+    saveTimerState();
 
     // Broadcast update
     broadcastMessage({
@@ -277,10 +302,7 @@ function handlePhaseComplete() {
     } else {
       // Close break UI if starting focus
       chrome.tabs.sendMessage(timerState.focusTabId, { action: 'hideOverlay' });
-      if (breakWindowId) {
-        try { chrome.windows.remove(breakWindowId); } catch (e) {}
-        breakWindowId = null;
-      }
+      closeBreakWindow();
       broadcastMessage({ action: 'timerComplete', phase: 'break' });
     }
 
@@ -320,10 +342,7 @@ function handlePhaseComplete() {
   timerState.timeRemaining = Math.min(timerState.focusMinutes * 60, remain);
 
   chrome.tabs.sendMessage(timerState.focusTabId, { action: 'hideOverlay' });
-  if (breakWindowId) {
-    try { chrome.windows.remove(breakWindowId); } catch (e) {}
-    breakWindowId = null;
-  }
+  closeBreakWindow();
 
   broadcastMessage({ action: 'timerComplete', phase: 'break' });
   startCountdown();
@@ -376,12 +395,7 @@ function handleSessionComplete() {
   });
 
   // Close break window if open
-  if (breakWindowId) {
-    try {
-      chrome.windows.remove(breakWindowId);
-    } catch (e) {}
-    breakWindowId = null;
-  }
+  closeBreakWindow();
 
   // Reset timer
   stopTimer();
@@ -448,20 +462,7 @@ async function handleFocusLost() {
   broadcastMessage({ action: 'focusLost' });
 }
 
-function broadcastMessage(message) {
-  // Send to popup if it's open
-  chrome.runtime.sendMessage(message).catch(() => {
-    // Popup might not be open, that's okay
-  });
-}
-
-function extractDomain(title) {
-  // Simple domain extraction from title or URL
-  if (!title) return '';
-  
-  // Remove common prefixes and get the main part
-  return title.split(' ')[0].toLowerCase();
-}
+// extractDomain helper was unused – removed for clarity
 
 // Restore timer state on startup
 chrome.runtime.onStartup.addListener(() => {
@@ -470,7 +471,7 @@ chrome.runtime.onStartup.addListener(() => {
       timerState = result.timerState;
       // Don't restart countdown automatically, let user restart if needed
       timerState.isActive = false;
-      chrome.storage.local.remove('timerState');
+      clearTimerState();
     }
   });
 });1

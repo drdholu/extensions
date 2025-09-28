@@ -1,20 +1,27 @@
 document.addEventListener('DOMContentLoaded', async () => {
-  const timeDisplay = document.getElementById('timeDisplay');
-  const timerStatus = document.getElementById('timerStatus');
-  const sessionCount = document.getElementById('sessionCount');
-  const startBtn = document.getElementById('startBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const focusTimeInput = document.getElementById('focusTime');
-  const breakTimeInput = document.getElementById('breakTime');
-  const totalMinutesInput = document.getElementById('totalMinutes');
-  const presetBtns = document.querySelectorAll('.preset-btn');
+  // DOM shortcuts
+  const $ = (id) => document.getElementById(id);
+
+  const timeDisplay      = $("timeDisplay");
+  const timerStatus      = $("timerStatus");
+  const sessionCount     = $("sessionCount");
+  const startBtn         = $("startBtn");
+  const stopBtn          = $("stopBtn");
+  const focusTimeInput   = $("focusTime");
+  const breakTimeInput   = $("breakTime");
+  const totalMinutesInput= $("totalMinutes");
+  const presetBtns       = document.querySelectorAll('.preset-btn');
   const focusTabInfo = document.getElementById('focusTabInfo');
   const focusTabTitle = document.getElementById('focusTabTitle');
   const planSummary = document.getElementById('planSummary');
   const customModeRadio = document.getElementById('customMode');
   const totalModeRadio = document.getElementById('totalMode');
-  const customSection = document.getElementById('customSection');
-  const totalSection = document.getElementById('totalSection');
+  const customSection    = $("customSection");
+  const totalSection     = $("totalSection");
+
+  // Storage helpers
+  const saveSync = (obj) => chrome.storage.sync.set(obj);
+  const loadSync = (keys) => chrome.storage.sync.get(keys);
 
   // Load saved data
   await loadData();
@@ -112,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   async function loadData() {
-    const result = await chrome.storage.sync.get(['focusTime', 'breakTime', 'sessionsCompleted', 'totalMinutes', 'timerMode']);
+    const result = await loadSync(['focusTime', 'breakTime', 'sessionsCompleted', 'totalMinutes', 'timerMode']);
     
     if (result.focusTime) focusTimeInput.value = result.focusTime;
     if (result.breakTime) breakTimeInput.value = result.breakTime;
@@ -133,32 +140,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const customModeOption = customModeRadio.closest('.mode-option');
     const totalModeOption = totalModeRadio.closest('.mode-option');
 
-    customModeOption.addEventListener('click', () => {
-      customModeRadio.checked = true;
-      chrome.storage.sync.set({ timerMode: 'custom' });
+    const setMode = (mode) => {
+      customModeRadio.checked = mode === 'custom';
+      totalModeRadio.checked  = mode === 'total';
+      saveSync({ timerMode: mode });
       updateModeDisplay();
-    });
+    };
 
-    totalModeOption.addEventListener('click', () => {
-      totalModeRadio.checked = true;
-      chrome.storage.sync.set({ timerMode: 'total' });
-      updateModeDisplay();
-    });
-
+    customModeOption.addEventListener('click', () => setMode('custom'));
+    totalModeOption.addEventListener('click', () => setMode('total'));
     // Also handle radio button changes directly
-    customModeRadio.addEventListener('change', () => {
-      if (customModeRadio.checked) {
-        chrome.storage.sync.set({ timerMode: 'custom' });
-        updateModeDisplay();
-      }
-    });
-
-    totalModeRadio.addEventListener('change', () => {
-      if (totalModeRadio.checked) {
-        chrome.storage.sync.set({ timerMode: 'total' });
-        updateModeDisplay();
-      }
-    });
+    customModeRadio.addEventListener('change', () => customModeRadio.checked && setMode('custom'));
+    totalModeRadio  .addEventListener('change', () => totalModeRadio.checked  && setMode('total'));
   }
 
   function updateModeDisplay() {
@@ -200,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   async function updateSessionCount() {
-    const result = await chrome.storage.sync.get(['sessionsCompleted']);
+    const result = await loadSync(['sessionsCompleted']);
     sessionCount.textContent = result.sessionsCompleted || 0;
   }
 
@@ -232,18 +225,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     timerStatus.textContent = 'Ready to focus';
   }
 
-  // Save settings when changed
-  focusTimeInput.addEventListener('change', () => {
-    chrome.storage.sync.set({ focusTime: parseInt(focusTimeInput.value) });
-  });
-
-  breakTimeInput.addEventListener('change', () => {
-    chrome.storage.sync.set({ breakTime: parseInt(breakTimeInput.value) });
-  });
-
+  // Save changes
+  focusTimeInput .addEventListener('change', () => saveSync({ focusTime: parseInt(focusTimeInput.value) }));
+  breakTimeInput .addEventListener('change', () => saveSync({ breakTime: parseInt(breakTimeInput.value) }));
   totalMinutesInput.addEventListener('change', () => {
-    const v = parseInt(totalMinutesInput.value);
-    chrome.storage.sync.set({ totalMinutes: isNaN(v) ? 0 : v });
+    const val = parseInt(totalMinutesInput.value);
+    saveSync({ totalMinutes: isNaN(val) ? 0 : val });
   });
 
   totalMinutesInput.addEventListener('input', renderPlanSummary);
