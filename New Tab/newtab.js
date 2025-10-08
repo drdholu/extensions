@@ -12,8 +12,8 @@ function drawAnalogClock(canvas, date = new Date()) {
   ctx.beginPath();
   ctx.arc(0, 0, r - 3, 0, Math.PI * 2);
   const gradient = ctx.createRadialGradient(0, 0, r - 30, 0, 0, r);
-  gradient.addColorStop(0, 'rgba(255, 214, 90, 0.05)');
-  gradient.addColorStop(1, 'rgba(255, 214, 90, 0)');
+  gradient.addColorStop(0, 'rgba(59, 130, 246, 0.08)');
+  gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
   ctx.fillStyle = gradient;
   ctx.fill();
 
@@ -33,7 +33,7 @@ function drawAnalogClock(canvas, date = new Date()) {
     ctx.beginPath();
     ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
     ctx.lineTo(Math.cos(angle) * (r - 10), Math.sin(angle) * (r - 10));
-    ctx.strokeStyle = i % 5 === 0 ? 'rgba(255,214,90,0.4)' : 'rgba(255,255,255,0.15)';
+    ctx.strokeStyle = i % 5 === 0 ? 'rgba(59, 130, 246, 0.5)' : 'rgba(255,255,255,0.15)';
     ctx.lineWidth = i % 5 === 0 ? 2.5 : 1;
     ctx.stroke();
   }
@@ -64,7 +64,7 @@ function drawAnalogClock(canvas, date = new Date()) {
 
   // Second hand (accent)
   const secAngle = (Math.PI * 2 * seconds) / 60 - Math.PI / 2;
-  ctx.strokeStyle = '#ffd65a';
+  ctx.strokeStyle = '#3b82f6';
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -75,9 +75,9 @@ function drawAnalogClock(canvas, date = new Date()) {
   // Center dot
   ctx.beginPath();
   ctx.arc(0, 0, 6, 0, Math.PI * 2);
-  ctx.fillStyle = '#ffd65a';
+  ctx.fillStyle = '#3b82f6';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.strokeStyle = 'rgba(59, 130, 246, 0.4)';
   ctx.lineWidth = 2;
   ctx.stroke();
 
@@ -233,9 +233,9 @@ function updateStockData() {
   const change = (Math.random() - 0.5) * 2; // -1% to +1%
   const changeEl = $('#stock-change');
   changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-  changeEl.className = change >= 0 
-    ? 'text-green-400 text-[11px] px-2 py-0.5 bg-green-400/10 rounded-md align-middle'
-    : 'text-red-400 text-[11px] px-2 py-0.5 bg-red-400/10 rounded-md align-middle';
+  changeEl.className = change >= 0
+    ? 'text-success text-[11px] px-2 py-0.5 bg-success/10 rounded-md font-semibold'
+    : 'text-danger text-[11px] px-2 py-0.5 bg-danger/10 rounded-md font-semibold';
 }
 
 function startStockAutoUpdate() {
@@ -327,7 +327,7 @@ function initSettingsUI() {
       const data = await geocodeCity(q);
       const list = (data.results || []).map((r, idx) => {
         const label = `${r.name}${r.admin1 ? ', ' + r.admin1 : ''}${r.country ? ', ' + r.country : ''}`;
-        return `<button data-idx="${idx}" class="w-full text-left px-3 py-2 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10">${label}</button>`;
+        return `<button data-idx="${idx}" class="w-full text-left px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-accent/10 hover:border-accent/30 transition-all duration-200 text-white/90">${label}</button>`;
       }).join('');
       cityResults.innerHTML = list || '<div class="text-white/50 text-sm">No results</div>';
       Array.from(cityResults.querySelectorAll('button')).forEach((btn) => {
@@ -453,14 +453,14 @@ function renderTeam() {
       // Set status dot color
       statusDotEl.className = 'w-2 h-2 rounded-full';
       if (status === 'W') {
-        statusDotEl.classList.add('bg-green-400');
-        statusTextEl.className = 'text-green-400';
+        statusDotEl.classList.add('bg-success');
+        statusTextEl.className = 'text-success';
       } else if (status === 'L') {
-        statusDotEl.classList.add('bg-red-400');
-        statusTextEl.className = 'text-red-400';
+        statusDotEl.classList.add('bg-danger');
+        statusTextEl.className = 'text-danger';
       } else {
-        statusDotEl.classList.add('bg-yellow-400');
-        statusTextEl.className = 'text-yellow-400';
+        statusDotEl.classList.add('bg-accent-light');
+        statusTextEl.className = 'text-accent-light';
       }
     } catch (_) {
       scoreEl.textContent = 'Fetch failed';
