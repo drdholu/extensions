@@ -1,0 +1,17 @@
+{
+  "name": "New Tab",
+  "version": "1.0.0",
+  "main": "newtab.js",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./styles/tailwind.css -o ./styles/newtab.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13"
+  }
+}
