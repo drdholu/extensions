@@ -22,6 +22,25 @@
       .search-input:focus-within {
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.18);
       }
+      /* Focus mode: hide widgets for distraction-free page */
+      body.focus-mode .widgets-row {
+        display: none !important;
+      }
+      body.focus-mode #subgreeting {
+        display: none !important;
+      }
+      /* nicer scrollbars for result lists */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 9999px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
       @media (max-width: 640px) {
         .glass-card:hover {
           transform: none;
@@ -50,8 +69,17 @@
         </div>
       </div>
 
+      <!-- Quick Links -->
+      <div id="linksSection" class="mt-4 sm:mt-6 w-full max-w-5xl">
+        <div class="flex justify-between items-center mb-3">
+          <div class="text-xs font-bold uppercase tracking-wider text-white/70">Quick Links</div>
+          <button id="editLinks" class="px-3 py-1.5 text-xs rounded-lg border bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all duration-200 font-semibold text-white/80 hover:text-white/95">Edit</button>
+        </div>
+        <div id="linksGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5"></div>
+      </div>
+
       <!-- Widgets row -->
-      <div class="grid grid-cols-1 gap-4 sm:gap-5 mt-8 sm:mt-10 w-full max-w-5xl sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-1 gap-4 sm:gap-5 mt-8 sm:mt-10 w-full max-w-5xl sm:grid-cols-2 lg:grid-cols-4 widgets-row">
         <!-- Clock Card -->
         <div class="group flex flex-col p-5 sm:p-6 rounded-2xl glass-card shadow-card">
           <div class="grid flex-1 place-items-center py-2">
@@ -110,6 +138,15 @@
           </div>
            <div class="relative mt-12 text-xs text-white/60 font-medium" id="city">Pimpri Chinchwad, India</div>
         </div>
+
+        <!-- Notes Card -->
+        <div class="group flex flex-col p-5 sm:p-6 rounded-2xl glass-card shadow-card">
+          <div class="flex justify-between items-center mb-3">
+            <div class="text-xs font-bold uppercase tracking-wider text-white/70">Notes</div>
+            <span class="text-xs text-white/50">Auto-saved</span>
+          </div>
+          <textarea id="notes" placeholder="Jot something down..." class="flex-1 w-full bg-transparent focus:outline-none text-white/90 placeholder-white/50" style="min-height: 96px; resize: vertical;"></textarea>
+        </div>
       </div>
 
       
@@ -148,6 +185,17 @@
               <label class="block mb-3 text-sm font-semibold text-white/85">Favorite team</label>
               <input id="teamInput" type="text" placeholder="e.g., Manchester City / Lakers" class="px-4 py-3 w-full rounded-xl border bg-panel2 border-white/10 text-white/90 placeholder-white/50 focus:border-accent/50 focus:outline-none focus:ring-2 focus:ring-accent/20 transition-all" />
               <p class="mt-2 text-xs text-white/50">Search for your favorite sports team.</p>
+            </div>
+
+            <!-- Focus mode toggle -->
+            <div class="flex items-center justify-between">
+              <div>
+                <label for="focusModeToggle" class="block text-sm font-semibold text-white/85">Focus mode</label>
+                <p class="mt-1 text-xs text-white/50">Hide widgets for a distraction-free page. Press T to toggle.</p>
+              </div>
+              <label class="inline-flex items-center gap-2">
+                <input id="focusModeToggle" type="checkbox" class="w-5 h-5" />
+              </label>
             </div>
 
             <div class="flex gap-3 justify-end pt-4">

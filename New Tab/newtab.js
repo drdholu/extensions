@@ -290,8 +290,16 @@ function initSettingsUI() {
   const stocksInput = document.getElementById('stocksInput');
   const teamInput = document.getElementById('teamInput');
   const editTeamBtn = document.getElementById('editTeam');
+  const focusToggle = document.getElementById('focusModeToggle');
 
-  openBtn?.addEventListener('click', () => openSettingsModal(true));
+  openBtn?.addEventListener('click', async () => {
+    openSettingsModal(true);
+    const { city, stocks, team, focusMode } = await loadSettings();
+    if (cityInput) cityInput.value = city || '';
+    if (stocksInput) stocksInput.value = Array.isArray(stocks) ? stocks.join(', ') : '';
+    if (teamInput) teamInput.value = team || '';
+    if (focusToggle) focusToggle.checked = !!focusMode;
+  });
   closeBtn?.addEventListener('click', () => openSettingsModal(false));
   editTeamBtn?.addEventListener('click', async () => {
     // Open modal and focus team input
@@ -367,13 +375,15 @@ function initSettingsUI() {
       city: cityInput.value || undefined,
       coords: selectedCoords || undefined,
       stocks: symbols.length ? symbols : ['NVDA'],
-      team: (teamInput.value || '').trim() || undefined
+      team: (teamInput.value || '').trim() || undefined,
+      focusMode: !!(focusToggle && focusToggle.checked)
     });
     openSettingsModal(false);
     // refresh weather/stock
     initWeatherFromSettings();
     initStockFromSettings();
     renderTeam();
+    applyFocusMode(!!(focusToggle && focusToggle.checked));
   });
 }
 
@@ -490,10 +500,16 @@ function renderLinks() {
 function editLinksFlow() {
   // Simple prompt-based editor for now (CSP-safe). Could be modal later.
   const container = document.getElementById('linksGrid');
-  container.addEventListener('contextmenu', async (e) => {
-    e.preventDefault();
+  const btn = document.getElementById('editLinks');
+
+  async function openEditor() {
     const current = await loadSettings();
-    const list = Array.isArray(current.links) ? current.links : [];
+    const list = Array.isArray(current.links) && current.links.length ? current.links : [
+      { title: 'X', url: 'https://x.com' },
+      { title: 'YouTube', url: 'https://youtube.com' },
+      { title: 'GitHub', url: 'https://github.com' },
+      { title: 'ChatGPT', url: 'https://chat.openai.com' }
+    ];
     const input = prompt('Enter links as Title|URL per line', list.map(l => `${l.title}|${l.url}`).join('\n'));
     if (input == null) return;
     const parsed = input.split('\n').map(line => {
@@ -502,6 +518,80 @@ function editLinksFlow() {
     }).filter(Boolean);
     await saveSettings({ links: parsed });
     renderLinks();
+  }
+
+  container?.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    openEditor();
+  });
+  btn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    openEditor();
+  });
+}
+
+function debounce(fn, delay) {
+  let t;
+  return function(...args) {
+    clearTimeout(t);
+    t = setTimeout(() => fn.apply(this, args), delay);
+  };
+}
+
+function initLinks() {
+  renderLinks();
+  editLinksFlow();
+}
+
+function initNotes() {
+  const area = document.getElementById('notes');
+  if (!area) return;
+  loadSettings().then(({ notes }) => {
+    area.value = notes || '';
+    const saver = debounce(() => {
+      saveSettings({ notes: area.value });
+    }, 400);
+    area.addEventListener('input', saver);
+  });
+}
+
+function applyFocusMode(enabled) {
+  document.body.classList.toggle('focus-mode', !!enabled);
+}
+
+async function applyFocusModeFromSettings() {
+  const { focusMode } = await loadSettings();
+  applyFocusMode(!!focusMode);
+}
+
+async function toggleFocusMode() {
+  const { focusMode } = await loadSettings();
+  const next = !focusMode;
+  await saveSettings({ focusMode: next });
+  applyFocusMode(next);
+}
+
+function initKeyboardShortcuts() {
+  document.addEventListener('keydown', (e) => {
+    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+    const isTyping = tag === 'input' || tag === 'textarea' || (e.target && e.target.isContentEditable);
+    if (isTyping) return;
+    const key = e.key.toLowerCase();
+    if (key === '/') {
+      e.preventDefault();
+      const input = document.getElementById('search');
+      input?.focus();
+    } else if (key === 's') {
+      e.preventDefault();
+      openSettingsModal(true);
+    } else if (key === 'n') {
+      e.preventDefault();
+      const area = document.getElementById('notes');
+      area?.focus();
+    } else if (key === 't') {
+      e.preventDefault();
+      toggleFocusMode();
+    }
   });
 }
 
@@ -539,6 +629,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initStockFromSettings();
   initWeatherFromSettings();
   renderTeam();
+  initLinks();
+  initNotes();
+  initKeyboardShortcuts();
+  applyFocusModeFromSettings();
 });
 
 
